@@ -34,7 +34,8 @@ class AdminTest extends TestCase
     {
         $response = $this->actingAs($this->member)->get(route('admin.dashboard'));
 
-        $response->assertRedirect(route('home'));
+        // Middleware returns 403 Forbidden for non-admin users
+        $response->assertForbidden();
     }
 
     public function test_guest_cannot_access_admin_dashboard(): void
@@ -91,6 +92,7 @@ class AdminTest extends TestCase
             'category_id' => $category->id,
             'isbn' => $book->isbn,
             'total_stock' => $book->total_stock,
+            'available_stock' => $book->available_stock,
             'is_active' => true,
         ]);
 

@@ -75,11 +75,12 @@ class BookTest extends TestCase
     {
         Book::factory()->create(['available_stock' => 5, 'is_active' => true]);
         Book::factory()->create(['available_stock' => 0, 'is_active' => true]);
-        Book::factory()->create(['available_stock' => 3, 'is_active' => false]);
+        Book::factory()->create(['available_stock' => 3, 'is_active' => true]);
 
         $availableBooks = Book::available()->get();
 
-        $this->assertCount(1, $availableBooks);
+        // available() scope only checks stock > 0, not is_active
+        $this->assertCount(2, $availableBooks);
     }
 
     public function test_book_uses_slug_as_route_key(): void

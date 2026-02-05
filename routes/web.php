@@ -14,7 +14,7 @@ Route::get('/', [HomeController::class , 'index'])->name('home');
 // Book catalog (public)
 Route::get('/books', [BookController::class , 'index'])->name('books.index');
 Route::get('/books/{book:slug}', [BookController::class , 'show'])->name('books.show');
-Route::get('/api/books/{book}/availability', [BookController::class , 'checkAvailability'])->name('books.availability');
+Route::get('/books/{book:slug}/availability', [BookController::class , 'checkAvailability'])->name('books.availability');
 
 // Authentication routes
 Auth::routes();

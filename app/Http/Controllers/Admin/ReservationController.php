@@ -22,14 +22,14 @@ class ReservationController extends Controller
         }
 
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = strtolower($request->search);
             $query->where(function ($q) use ($search) {
                 $q->whereHas('user', function ($userQ) use ($search) {
-                        $userQ->where('name', 'ilike', "%{$search}%")
-                            ->orWhere('email', 'ilike', "%{$search}%");
+                        $userQ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+                            ->orWhereRaw('LOWER(email) LIKE ?', ["%{$search}%"]);
                     }
                     )->orWhereHas('book', function ($bookQ) use ($search) {
-                        $bookQ->where('title', 'ilike', "%{$search}%");
+                        $bookQ->whereRaw('LOWER(title) LIKE ?', ["%{$search}%"]);
                     }
                     );
                 });

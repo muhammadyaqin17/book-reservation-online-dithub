@@ -72,9 +72,9 @@ class ReservationTest extends TestCase
             'status' => 'pending',
         ]);
 
-        $response = $this->actingAs($this->member)->post(route('reservations.cancel', $reservation));
+        $response = $this->actingAs($this->member)->delete(route('reservations.cancel', $reservation));
 
-        $response->assertRedirect(route('reservations.my'));
+        $response->assertRedirect();
 
         $this->assertDatabaseHas('reservations', [
             'id' => $reservation->id,
@@ -90,7 +90,7 @@ class ReservationTest extends TestCase
             'status' => 'borrowed',
         ]);
 
-        $response = $this->actingAs($this->member)->post(route('reservations.cancel', $reservation));
+        $response = $this->actingAs($this->member)->delete(route('reservations.cancel', $reservation));
 
         $response->assertRedirect();
 

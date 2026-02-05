@@ -91,18 +91,25 @@ class BookController extends Controller
     }
 
     /**
-     * API: Check book availability in real-time
+     * API: Check book availability in real-time (uses Redis caching)
      */
     public function checkAvailability(Book $book)
     {
-        $availability = Cache::remember("book:{$book->id}:availability", 30, function () use ($book) {
+        // Get availability from Redis cache (30 seconds TTL)
+        $cacheKey = "book:{$book->id}:availability";
+        $availability = Cache::remember($cacheKey, 30, function () use ($book) {
             return $book->fresh()->available_stock;
+        });
+
+        $queueLength = Cache::remember("book:{$book->id}:queue_length", 30, function () use ($book) {
+            return $book->queuedReservations()->count();
         });
 
         return response()->json([
             'available' => $availability > 0,
-            'stock' => $availability,
-            'queue_count' => $book->queuedReservations()->count(),
+            'available_stock' => $availability,
+            'queue_length' => $queueLength,
+            'cached' => true, // Indicates data is from Redis cache
         ]);
     }
 }

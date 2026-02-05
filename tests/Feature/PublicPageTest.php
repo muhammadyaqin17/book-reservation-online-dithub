@@ -88,6 +88,7 @@ class PublicPageTest extends TestCase
             'available',
             'available_stock',
             'queue_length',
+            'cached',
         ]);
     }
 

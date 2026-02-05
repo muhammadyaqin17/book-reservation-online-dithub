@@ -166,14 +166,15 @@ class Book extends Model
     }
 
     /**
-     * Scope for search
+     * Scope for search (database-agnostic case-insensitive)
      */
     public function scopeSearch($query, $search)
     {
+        $search = strtolower($search);
         return $query->where(function ($q) use ($search) {
-            $q->where('title', 'ilike', "%{$search}%")
-                ->orWhere('author', 'ilike', "%{$search}%")
-                ->orWhere('isbn', 'ilike', "%{$search}%");
+            $q->whereRaw('LOWER(title) LIKE ?', ["%{$search}%"])
+                ->orWhereRaw('LOWER(author) LIKE ?', ["%{$search}%"])
+                ->orWhereRaw('LOWER(isbn) LIKE ?', ["%{$search}%"]);
         });
     }
 
